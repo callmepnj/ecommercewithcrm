@@ -22,7 +22,7 @@ const router = Router();
 router.use(authenticate);
 router.use(requireAdmin);
 
-router.post("/product-image/:productId", upload.single("image"), async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post("/product-image/:productId", upload.single("image") as any, async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: "No image provided" });
