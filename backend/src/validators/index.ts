@@ -33,17 +33,18 @@ export const createProductSchema = z.object({
   body: z.object({
     name: z.string().min(2),
     nameHi: z.string().optional(),
-    description: z.string().min(10),
-    descHi: z.string().optional(),
+    description: z.string().optional().default(""),
+    descriptionHi: z.string().optional(),
     categoryId: z.string().uuid(),
     price: z.number().positive(),
-    salePrice: z.number().positive().optional(),
-    sku: z.string().min(2),
+    salePrice: z.number().positive().optional().nullable(),
+    sku: z.string().optional(),
     stock: z.number().int().min(0),
     fabric: z.string().optional(),
     color: z.string().optional(),
-    sizes: z.array(z.string()),
+    sizes: z.array(z.string()).optional().default([]),
     tags: z.array(z.string()).optional(),
+    isFeatured: z.boolean().optional(),
   }),
 });
 

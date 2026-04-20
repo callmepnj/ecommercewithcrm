@@ -32,13 +32,26 @@ export class ProductService {
     const slug = data.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
+      .replace(/(^-|-$)/g, "")
+      + "-" + Date.now().toString(36);
+
+    // Auto-generate SKU if not provided
+    const sku = data.sku || ("SKU-" + Date.now().toString(36).toUpperCase());
+
+    // Map descriptionHi to descHi for Prisma
+    const descHi = data.descriptionHi || data.descHi || undefined;
+
+    const { categoryId, descriptionHi: _dh, ...rest } = data;
 
     return productRepository.create({
-      ...data,
+      ...rest,
       slug,
-      category: { connect: { id: data.categoryId } },
-      categoryId: undefined,
+      sku,
+      descHi,
+      description: data.description || "",
+      sizes: data.sizes || [],
+      tags: data.tags || [],
+      category: { connect: { id: categoryId } },
     });
   }
 
@@ -46,6 +59,12 @@ export class ProductService {
     const existing = await productRepository.findById(id);
     if (!existing) {
       throw new AppError("Product not found", 404);
+    }
+
+    // Map descriptionHi to descHi for Prisma
+    if (data.descriptionHi !== undefined) {
+      data.descHi = data.descriptionHi;
+      delete data.descriptionHi;
     }
 
     if (data.categoryId) {

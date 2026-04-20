@@ -138,18 +138,23 @@ export default function AdminProductsPage() {
       return;
     }
 
+    if (!form.categoryId) {
+      showToast(isHi ? "कृपया श्रेणी चुनें" : "Please select a category", "error");
+      return;
+    }
+
     const payload: any = {
       name: form.name,
       nameHi: form.nameHi || undefined,
-      description: form.description || undefined,
+      description: form.description || "",
       descriptionHi: form.descriptionHi || undefined,
       price: parseFloat(form.price),
       salePrice: form.salePrice ? parseFloat(form.salePrice) : undefined,
       stock: parseInt(form.stock),
-      categoryId: form.categoryId || undefined,
+      categoryId: form.categoryId,
       fabric: form.fabric || undefined,
       color: form.color || undefined,
-      sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()) : undefined,
+      sizes: form.sizes ? form.sizes.split(",").map((s) => s.trim()).filter(Boolean) : [],
       isFeatured: form.isFeatured,
     };
 
@@ -158,13 +163,16 @@ export default function AdminProductsPage() {
         await adminApi.updateProduct(editingProduct.id, payload);
         showToast(isHi ? "प्रोडक्ट अपडेट हो गया ✅" : "Product updated ✅");
       } else {
-        await adminApi.createProduct(payload);
-        showToast(isHi ? "प्रोडक्ट बन गया ✅" : "Product created ✅");
+        const created = await adminApi.createProduct(payload);
+        showToast(isHi ? "प्रोडक्ट बन गया ✅ — अब फ़ोटो जोड़ें" : "Product created ✅ — now add images");
+        // Switch to edit mode so user can upload images
+        setEditingProduct(created);
+        setProductImages([]);
       }
-      resetForm();
       loadProducts();
-    } catch {
-      showToast(isHi ? "कुछ गलत हो गया ❌" : "Something went wrong ❌", "error");
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.response?.data?.errors?.[0]?.message || (isHi ? "कुछ गलत हो गया ❌" : "Something went wrong ❌");
+      showToast(msg, "error");
     }
   };
 
