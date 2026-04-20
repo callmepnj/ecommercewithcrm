@@ -1,0 +1,22 @@
+{
+  "name": "AAINA BOUTIQUE",
+  "short_name": "AAINA",
+  "description": "Premium Indian ethnic wear for women - Kurtis, Sarees & more",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFDF7",
+  "theme_color": "#800020",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
