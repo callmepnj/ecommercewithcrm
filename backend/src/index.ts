@@ -5,6 +5,7 @@ import morgan from "morgan";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
+import path from "path";
 import { config } from "./config";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 import { authRoutes } from "./routes/auth";
@@ -46,6 +47,9 @@ app.use(compression() as any);
 if (config.nodeEnv !== "test") {
   app.use(morgan("dev"));
 }
+
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 // Health check
 app.get("/api/health", (_req, res) => {

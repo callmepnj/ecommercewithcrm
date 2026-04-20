@@ -1,5 +1,6 @@
 import { productRepository } from "../repositories/productRepository";
 import { AppError } from "../middleware/errorHandler";
+import { config } from "../config";
 import cloudinary from "../config/cloudinary";
 
 export class ProductService {
@@ -84,14 +85,19 @@ export class ProductService {
   }
 
   async uploadImage(file: Express.Multer.File, productId: string) {
-    const result = await cloudinary.uploader.upload(file.path, {
-      folder: "aaina-boutique/products",
-      transformation: [
-        { width: 800, height: 1000, crop: "fill", quality: "auto" },
-      ],
-    });
+    // If Cloudinary is configured, use it
+    if (config.cloudinary.cloudName && config.cloudinary.apiKey && config.cloudinary.apiSecret) {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "aaina-boutique/products",
+        transformation: [
+          { width: 800, height: 1000, crop: "fill", quality: "auto" },
+        ],
+      });
+      return { url: result.secure_url, publicId: result.public_id };
+    }
 
-    return { url: result.secure_url, publicId: result.public_id };
+    // Otherwise serve locally
+    return { url: `/uploads/${file.filename}`, publicId: file.filename };
   }
 }
 
