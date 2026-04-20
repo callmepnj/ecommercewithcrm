@@ -7,6 +7,13 @@ export const metadata: Metadata = {
   keywords: ["kurti", "saree", "Indian wear", "ethnic", "boutique", "women fashion"],
   authors: [{ name: "AAINA BOUTIQUE" }],
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
